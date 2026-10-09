@@ -411,28 +411,25 @@
 <h2 style="font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.2;margin:0">Сервисы Axoft для вашего проекта</h2>
 <div style="width:64px;height:3px;border-radius:2px;background:linear-gradient(90deg,#00B27C,#00B0BD,#00ADEF)"></div>
 </div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:20px">
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Card" variant="light" title="Демолаборатория" hint-size="100%,420px">
-<img src="assets/icons/q3/router.png" alt="" style="width:80px;height:80px;object-fit:contain;order:-1">
-<span style="align-self:flex-start;padding:3px 10px;border-radius:999px;background:#1E2849;color:#fff;font-size:12px;font-weight:600">Главный инженер, АСУ ТП</span>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.45">
-<sc-for list="{{ svcDemo }}" as="t" hint-placeholder-count="7"><div style="display:flex;gap:10px"><span style="flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#00B0BD;margin-top:8px"></span>{{ t }}</div></sc-for>
-</div>
-</x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Card" variant="light" title="Программно-аппаратные комплексы" hint-size="100%,420px">
-<img src="assets/icons/q3/industrial-server.png" alt="" style="width:80px;height:80px;object-fit:contain">
-<span style="align-self:flex-start;padding:3px 10px;border-radius:999px;background:#1E2849;color:#fff;font-size:12px;font-weight:600">CIO</span>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.45">
-<sc-for list="{{ svcPak }}" as="t" hint-placeholder-count="2"><div style="display:flex;gap:10px"><span style="flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#00B0BD;margin-top:8px"></span>{{ t }}</div></sc-for>
-</div>
-</x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Card" variant="light" title="Финансовые сервисы" hint-size="100%,420px">
-<img src="assets/icons/q3/cloud.png" alt="" style="width:80px;height:80px;object-fit:contain">
-<span style="align-self:flex-start;padding:3px 10px;border-radius:999px;background:#1E2849;color:#fff;font-size:12px;font-weight:600">Директор по закупкам</span>
-<div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.45">
-<sc-for list="{{ svcFin }}" as="t" hint-placeholder-count="3"><div style="display:flex;gap:10px"><span style="flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#00B27C;margin-top:8px"></span>{{ t }}</div></sc-for>
-</div>
-</x-import>
+<div class="service-grid">
+<article class="service-card">
+<div class="service-icon"><img src="assets/icons/services/lab.svg" alt="" width="40" height="40"></div>
+<h3>Демолаборатория</h3>
+<div class="service-audience">Главный инженер, АСУ ТП</div>
+<ul class="service-list"><sc-for list="{{ svcDemo }}" as="t" hint-placeholder-count="7"><li>{{ t }}</li></sc-for></ul>
+</article>
+<article class="service-card">
+<div class="service-icon"><img src="assets/icons/services/server.svg" alt="" width="40" height="40"></div>
+<h3>Программно-аппаратные комплексы</h3>
+<div class="service-audience">Директор по IT</div>
+<ul class="service-list"><sc-for list="{{ svcPak }}" as="t" hint-placeholder-count="2"><li>{{ t }}</li></sc-for></ul>
+</article>
+<article class="service-card">
+<div class="service-icon"><img src="assets/icons/services/finance.svg" alt="" width="40" height="40"></div>
+<h3>Финансовые сервисы</h3>
+<div class="service-audience">Директор по закупкам</div>
+<ul class="service-list"><sc-for list="{{ svcFin }}" as="t" hint-placeholder-count="3"><li>{{ t }}</li></sc-for></ul>
+</article>
 </div>
 </div>
 </section>
