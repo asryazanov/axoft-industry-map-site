@@ -1,0 +1,9 @@
+:root{
+/* Dark stage: navy field with a teal glow bottom-left (bg-dark-gradient.png) */
+--grad-dark:radial-gradient(120% 100% at 8% 88%, #0C6E79 0%, #123A5C 38%, var(--axo-navy-900) 100%);
+/* Light stage: cool white sheet with a faint blue haze (bg-light-gradient.png) */
+--grad-light:radial-gradient(120% 100% at 50% 0%, #FFFFFF 0%, #F2F6FA 55%, #E7ECF2 100%); /* @kind color */
+/* Brand X gradient: green -> teal -> cyan, as in the logo mark */
+--grad-x:linear-gradient(103deg, var(--axo-green) 0%, var(--axo-teal) 55%, var(--axo-cyan) 100%);
+--grad-accent-line:linear-gradient(90deg, var(--axo-green), var(--axo-teal), var(--axo-cyan));
+}

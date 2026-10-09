@@ -1,0 +1,20 @@
+@font-face{font-family:Roboto;src:url('assets/fonts/Roboto.ttf') format('truetype');font-weight:100 900;font-style:normal;font-display:swap}
+:root{--font-core:'Roboto',Arial,sans-serif;--font-display:'Roboto',Arial,sans-serif;--brand-turquoise:#00b0bd;--brand-navy:#1e2849;--brand-green:#00b27c;--brand-cyan:#00adef;--brand-gray:#f6f6f6}
+body{font-family:var(--font-core);font-weight:300;line-height:1.5}
+button,input,select,textarea{font-family:inherit}
+button,a,input,select,textarea{scroll-margin-top:140px}
+:focus-visible{outline:3px solid #00adef!important;outline-offset:4px}
+input:focus-visible+span{outline:3px solid #00adef;outline-offset:3px}
+button:disabled{opacity:.5;cursor:wait}
+::selection{background:#00b0bd;color:#1e2849}
+.demo-primary,.demo-secondary{min-height:44px;padding:10px 22px;border-radius:999px;font:600 15px Roboto,Arial,sans-serif;cursor:pointer;border:1px solid #00b0bd}
+.demo-primary{background:#00b27c;color:#1e2849;border-color:#00b27c}
+.demo-primary:hover{background:#009e6d}
+.demo-secondary{color:#1e2849;background:#fff}
+.demo-footer{max-width:1200px;margin:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:40px;font-size:14px;line-height:1.6}
+.demo-footer p{margin:12px 0}.demo-footer strong{font-weight:600;color:white}.demo-footer a{color:#7ad9df}.demo-footer a:hover{color:white}
+.demo-error{padding:20px;margin:20px;background:#fff;color:#1e2849;border-radius:12px}
+.demo-error button{margin-left:16px}
+header a[href='#start'] img{height:30px!important}
+@media(max-width:599px){.demo-footer{grid-template-columns:1fr;gap:24px}header a[href='#start'] img{height:25px!important}header button[aria-label='Открыть подборку']{padding:8px 10px!important}h1{font-size:32px!important}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}

@@ -1,0 +1,75 @@
+:root{
+/* Corporate – main (BrandBook 2025 / corporate PPT template, slide "Корпоративные цвета") */
+--axo-navy:#1E2849;   /* RGB 30 40 73  – primary brand colour */
+--axo-green:#00B27C;  /* RGB 0 179 125 – primary accent */
+/* Corporate – additional */
+--axo-teal:#00B0BD;   /* RGB 0 176 189 */
+--axo-cyan:#00ADEF;   /* RGB 0 174 239 */
+
+/* Navy ramp (derived, oklch-harmonised) */
+--axo-navy-900:#0E1425;
+--axo-navy-800:#161E38;
+--axo-navy-700:#1E2849;
+--axo-navy-600:#2C3960;
+--axo-navy-400:#5B6789;
+--axo-navy-200:#AEB5C6;
+--axo-navy-050:#EDEFF4;
+
+/* Accent ramps (derived) */
+--axo-green-700:#00805A;
+--axo-green-500:#00B27C;
+--axo-green-200:#8CE0C6;
+--axo-green-050:#E6F8F1;
+--axo-teal-700:#007E88;
+--axo-teal-500:#00B0BD;
+--axo-teal-200:#8CDFE5;
+--axo-teal-050:#E6F7F9;
+--axo-cyan-700:#007CAB;
+--axo-cyan-500:#00ADEF;
+--axo-cyan-200:#8CDEF9;
+--axo-cyan-050:#E6F7FD;
+
+/* Neutrals (theme greys from the corporate template) */
+--axo-white:#FFFFFF;
+--axo-grey-050:#F6F6F6;
+--axo-grey-100:#E7E6E6;
+--axo-grey-300:#BFBFBF;
+--axo-grey-500:#A5A5A5;
+--axo-grey-700:#5C6270;
+
+/* Semantic – text */
+--text-heading:var(--axo-navy);
+--text-body:var(--axo-navy-700);
+--text-muted:var(--axo-grey-700);
+--text-inverse:var(--axo-white);
+--text-inverse-muted:rgba(255,255,255,.72);
+--text-accent:var(--axo-teal-700);
+
+/* Semantic – surfaces */
+--surface-page:var(--axo-white);
+--surface-subtle:var(--axo-grey-050);
+--surface-card:var(--axo-white);
+--surface-dark:var(--axo-navy);
+--surface-dark-deep:var(--axo-navy-900);
+--surface-accent:var(--axo-teal);
+--surface-glass:rgba(255,255,255,.08);
+
+/* Semantic – lines, states */
+--border-subtle:var(--axo-grey-100);
+--border-strong:var(--axo-navy-200);
+--border-accent:var(--axo-teal);
+--border-on-dark:rgba(255,255,255,.28);
+--accent:var(--axo-teal);
+--accent-strong:var(--axo-green);
+--accent-hover:var(--axo-teal-700);
+--accent-pressed:#006B73;
+--link:var(--axo-teal-700);
+--link-hover:var(--axo-navy);
+--focus-ring:var(--axo-cyan);
+
+/* Semantic – status (derived; the brandbook defines no status palette) */
+--status-success:var(--axo-green);
+--status-info:var(--axo-cyan);
+--status-warning:#E8A33D;
+--status-danger:#D9455F;
+}

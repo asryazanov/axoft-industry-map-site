@@ -1,0 +1,27 @@
+:root{
+--space-0:0;
+--space-1:4px;
+--space-2:8px;
+--space-3:12px;
+--space-4:16px;
+--space-5:20px;
+--space-6:24px;
+--space-8:32px;
+--space-10:40px;
+--space-12:48px;
+--space-16:64px;
+--space-20:80px;
+
+/* Slide grid (1280x720 canvas, measured from the corporate template) */
+--slide-w:1280px;
+--slide-h:720px;
+--slide-pad-x:60px;
+--slide-pad-y:51px;      /* title baseline block starts here */
+--slide-title-h:49px;
+--slide-gutter:24px;
+--slide-logo-inset:12px; /* logo sits 12px from the bottom-left corner */
+
+/* Page grid (documents, landings) */
+--container-max:1200px;
+--page-pad-x:32px;
+}

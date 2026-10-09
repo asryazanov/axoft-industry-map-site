@@ -1,0 +1,40 @@
+:root{
+/* Corporate typeface: Roboto. Заголовочный стиль темы – Roboto Semibold, что равно
+   Roboto с font-weight 600, поэтому отдельная семья не объявляется.
+   Roboto поставляется локально, лицензия в assets/fonts/OFL.txt. */
+--font-core:"Roboto",system-ui,sans-serif;
+--font-display:"Roboto",system-ui,sans-serif;
+--font-mono:ui-monospace,"SF Mono",Consolas,monospace;
+
+--weight-regular:300;
+--weight-semibold:600;
+--weight-bold:700;
+
+/* Deck scale – pt values from the corporate template, px at 1280x720 (1pt = 1.333px) */
+--deck-hero:53.3px;        /* 40 pt bold – opening slide + section titles */
+--deck-block-title:33.3px; /* 25 pt bold – block headings */
+--deck-subhead:26.7px;     /* 20 pt – slide titles (regular) */
+--deck-lead:26.7px;        /* 20 pt bold – sub-headings of body copy */
+--deck-body:18.7px;        /* 14 pt – body copy, pills */
+--deck-body-sm:16px;       /* 12 pt – dense body copy, captions */
+
+/* Screen / document scale */
+--fs-display:56px;
+--fs-h1:40px;
+--fs-h2:32px;
+--fs-h3:24px;
+--fs-h4:20px;
+--fs-body-lg:18px;
+--fs-body:16px;
+--fs-body-sm:14px;
+--fs-caption:12px;
+
+--lh-tight:1.1; /* @kind other */
+--lh-heading:1.2; /* @kind other */
+--lh-body:1.45; /* @kind other */
+--lh-loose:1.6; /* @kind other */
+
+--ls-tight:-0.02em; /* @kind other */
+--ls-normal:0; /* @kind other */
+--ls-caps:0.08em; /* @kind other */
+}
