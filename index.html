@@ -32,9 +32,9 @@
 
 <header style="position:sticky;top:0;z-index:40;background:rgba(14,20,37,.94);backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.16)">
 <div style="max-width:1360px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 20px;min-height:64px">
-<a href="#start" style="display:flex;align-items:center;gap:12px;flex-shrink:0">
-<img src="assets/logo/logo-axoft-white.svg" alt="Axoft" style="height:24px">
-<span style="font-size:12px;line-height:1.25;color:rgba(255,255,255,.8);border-left:1px solid rgba(255,255,255,.28);padding-left:12px;max-width:16ch">Промышленность · для партнёров</span>
+<a href="#start" class="header-brand" aria-label="Axoft - промышленность, для партнёров">
+<img src="assets/logo/logo-axoft-white.svg" alt="Axoft" class="header-logo">
+<span class="header-brand-text"><strong>Промышленность</strong><span>Для партнёров</span></span>
 </a>
 <sc-if value="{{ navOn }}" hint-placeholder-val="{{ true }}">
 <nav style="display:flex;gap:18px;font-size:14px">
@@ -894,7 +894,7 @@ class Component extends DCLogic {
     hd.pilot=e=>this.setF('pilot',e.target.checked);hd.fin=e=>this.setF('fin',e.target.checked);hd.consent=e=>this.setF('consent',e.target.checked);
     const act={background:'#00B27C',borderColor:'#00B27C',color:'#1E2849'};
     return {
-      loadError:s.loadError,reloadCatalog:()=>window.location.reload(),navOn:w>=1180,mobile,searchOrder:mobile?3:0,searchFlex:mobile?'1 1 100%':'1 1 260px',searchMax:mobile?'none':'440px',
+      loadError:s.loadError,reloadCatalog:()=>window.location.reload(),navOn:w>=1320,mobile,searchOrder:mobile?3:0,searchFlex:mobile?'1 1 100%':'1 1 260px',searchMax:mobile?'none':'440px',
       q:s.q,onQ:e=>this.setState({q:e.target.value,qSrc:'head',searchIndex:-1,searchAll:false}),onQKey:e=>{
         const choices=s.searchAll?allResults:results;
         if(e.key==='Escape')this.setState({qSrc:'results',searchIndex:-1});

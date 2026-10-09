@@ -15,8 +15,8 @@ button:disabled{opacity:.5;cursor:wait}
 .demo-footer p{margin:12px 0}.demo-footer strong{font-weight:600;color:white}.demo-footer a{color:#7ad9df}.demo-footer a:hover{color:white}
 .demo-error{padding:20px;margin:20px;background:#fff;color:#1e2849;border-radius:12px}
 .demo-error button{margin-left:16px}
-header a[href='#start'] img{height:30px!important}
-@media(max-width:599px){.demo-footer{grid-template-columns:1fr;gap:24px}header a[href='#start'] img{height:25px!important}header button[aria-label='Открыть подборку']{padding:8px 10px!important}h1{font-size:32px!important}}
+
+@media(max-width:599px){.demo-footer{grid-template-columns:1fr;gap:24px}header button[aria-label='Открыть подборку']{padding:8px 10px!important}h1{font-size:32px!important}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation:none!important;transition:none!important}}
 .ux-entry h2{color:white;margin:0 0 8px;font-size:26px}.ux-entry p{color:#bfc8d6;margin:0 0 18px}.ux-entry h3{color:white;margin:0 0 12px;font-size:20px}
 .ux-task-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
@@ -49,3 +49,11 @@ header a[href='#start'] img{height:30px!important}
 .service-list li::before{content:'';position:absolute;left:0;top:.65em;width:6px;height:6px;border-radius:50%;background:#00b0bd}
 @media(min-width:700px) and (max-width:1050px){.service-grid{gap:16px}.service-card{padding:20px;grid-template-rows:80px 84px 52px 1fr;gap:14px}#services .service-card h3{font-size:20px}.service-icon{height:80px;width:80px}.service-audience{font-size:11px}.service-list{font-size:14px}}
 @media(max-width:699px){.service-grid{grid-template-columns:repeat(3,260px);gap:16px;overflow-x:auto;scroll-snap-type:x proximity;padding:0 0 16px;scrollbar-width:thin;scrollbar-color:#00b0bd #e3e5e9}.service-card{padding:22px;grid-template-rows:80px 78px 48px 1fr;gap:14px;scroll-snap-align:start}#services .service-card h3{font-size:20px}.service-icon{height:80px;width:80px}.service-list{font-size:14px}}
+
+.header-brand{display:flex;align-items:center;gap:18px;flex-shrink:0;text-decoration:none;border:0!important;box-shadow:none!important;color:#fff}
+.header-logo{display:block;width:auto;height:34px;flex-shrink:0}
+.header-brand-text{display:flex;flex-direction:column;gap:3px;border-left:1px solid rgba(255,255,255,.24);padding-left:18px;line-height:1.15;white-space:nowrap}
+.header-brand-text strong{font-size:18px;font-weight:600;letter-spacing:.01em;color:#fff}
+.header-brand-text>span{font-size:12px;font-weight:400;color:#b8c1d0}
+.header-brand:hover .header-brand-text strong{color:#fff}
+@media(max-width:599px){.header-brand{gap:12px}.header-logo{height:28px}.header-brand-text{padding-left:12px;gap:3px}.header-brand-text strong{font-size:16px}.header-brand-text>span{font-size:11px}}
