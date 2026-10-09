@@ -2,11 +2,12 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<title>Axoft – карта промышленного предприятия</title>
+<title>Axoft - карта промышленного предприятия</title>
 <meta name="description" content="Подберите классы IT-решений для промышленного предприятия по роли заказчика или зоне на интерактивной карте Axoft.">
 <link rel="stylesheet" href="brand.css">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script src="request-adapter.js"></script>
+<script src="ux-accessibility.js" defer></script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./runtime/react.js"></script>
 <script src="./runtime/react-dom.js"></script>
@@ -38,7 +39,7 @@
 <sc-if value="{{ navOn }}" hint-placeholder-val="{{ true }}">
 <nav style="display:flex;gap:18px;font-size:14px">
 <a href="#map" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Подбор</a>
-<a href="#stack" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Приоритетные решения</a>
+<a href="#stack" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Решения для производства</a>
 <a href="#services" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Сервисы</a>
 <a href="#faq" style="color:rgba(255,255,255,.8)" style-hover="color:#fff">Вопросы</a>
 </nav>
@@ -50,18 +51,18 @@
 <div style="position:absolute;top:calc(100% + 8px);left:0;right:0;min-width:min(420px,calc(100vw - 40px));background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(14,20,37,.35);padding:8px;max-height:min(70vh,520px);overflow-y:auto;z-index:2;color:#1E2849;display:flex;flex-direction:column;gap:2px">
 <div style="padding:8px 12px;font-size:12px;color:#5C6270">{{ resLabel }}</div>
 <sc-for list="{{ results }}" as="r" hint-placeholder-count="4">
-<button onClick="{{ r.onClick }}" style="width:100%;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:none;border-radius:10px;background:none;text-align:left;cursor:pointer;color:#1E2849" style-hover="background:#EEF7F8">
+<button onClick="{{ r.onClick }}" data-search-active="{{ r.active }}" style="width:100%;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:none;border-radius:10px;background:none;text-align:left;cursor:pointer;color:#1E2849" style-hover="background:#EEF7F8">
 <span style="font-size:14px;font-weight:600;line-height:1.35">{{ r.name }}</span>
 <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#5C6270"><span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:{{ r.color }}"></span>{{ r.where }}</span>
 <sc-if value="{{ r.match }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:#007E88">{{ r.match }}</span></sc-if>
 </button>
-</sc-for>
+</sc-for><button class="ux-search-all" onClick="{{ showAllResults }}">Все результаты</button>
 </div>
 </sc-if>
 </div>
 <div style="display:flex;align-items:center;gap:8px;margin-left:auto;flex-shrink:0">
-<button onClick="{{ openStack }}" aria-label="Открыть подборку" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid {{ stackBd }};background:{{ stackBg }};color:#fff;font-size:14px;font-weight:600;cursor:pointer;transform:scale({{ bumpScale }});transition:transform .2s cubic-bezier(.2,.6,.2,1),background .2s,border-color .2s">Подборка: {{ stackCount }}</button>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="sm" href="#request" hint-size="170px,40px">Подобрать решение</x-import>
+<button onClick="{{ openStack }}" aria-label="Открыть подборку" style="display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 14px;border-radius:999px;border:1px solid {{ stackBd }};background:{{ stackBg }};color:#fff;font-size:14px;font-weight:600;cursor:pointer;transform:scale({{ bumpScale }});transition:transform .2s cubic-bezier(.2,.6,.2,1),background .2s,border-color .2s">Классы: {{ stackCount }}</button>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="sm" href="#map" hint-size="170px,40px">Начать подбор</x-import>
 </div>
 </div>
 </header>
@@ -71,15 +72,20 @@
 <div style="position:relative;max-width:1360px;margin:0 auto;padding:clamp(40px,6vw,80px) 20px clamp(40px,5vw,64px);display:flex;flex-direction:column;gap:clamp(28px,4vw,44px)">
 <div style="display:flex;flex-direction:column;gap:14px;max-width:760px">
 <div style="font-size:14px;font-weight:600;letter-spacing:.04em;color:#00B0BD">Для партнёров Axoft · демоверсия</div>
-<h1 style="color:#fff;font-weight:700;font-size:clamp(30px,4.4vw,52px);line-height:1.1;letter-spacing:-.02em;margin:0;text-wrap:balance">Что предложить промышленному заказчику – от цеха до офиса</h1>
-<p style="font-size:clamp(16px,1.5vw,18px);line-height:1.55;color:rgba(255,255,255,.82);margin:0;text-wrap:pretty">Весь IT-портфель Axoft для промышленного предприятия на одной карте: производство, административный персонал, IT-инфраструктура, ИБ, оборудование и технологическое оборудование – на технологиях из России и дружественных стран. Выберите роль ЛПР или зону и соберите подборку к встрече.</p>
+<h1 style="color:#fff;font-weight:700;font-size:clamp(30px,4.4vw,52px);line-height:1.1;letter-spacing:-.02em;margin:0;text-wrap:balance">Что предложить промышленному заказчику - от цеха до офиса</h1>
+<p style="font-size:clamp(16px,1.5vw,18px);line-height:1.55;color:rgba(255,255,255,.82);margin:0;text-wrap:pretty">Весь IT-портфель Axoft для промышленного предприятия на одной карте: производство, административный персонал, IT-инфраструктура, ИБ, оборудование и технологическое оборудование - на технологиях из России и дружественных стран. Выберите задачу, роль заказчика или найдите продукт. Добавьте нужные классы и скачайте запрос к встрече.</p>
 </div>
 
+<div class="ux-entry">
+<h2>Выберите способ подбора</h2><p>Способы ниже - альтернативы. Начните с удобного.</p>
+<h3>По задаче заказчика</h3>
+<div class="ux-task-grid"><sc-for list="{{ taskEntries }}" as="t" hint-placeholder-count="4"><button onClick="{{ t.onClick }}"><strong>{{ t.label }}</strong><span>{{ t.hint }}</span></button></sc-for></div>
+</div>
 <div style="display:flex;flex-direction:column;gap:14px">
-<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-weight:700;font-size:13px;color:#00B0BD">1</span><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">Кому предлагаете?</h2><span style="font-size:14px;color:rgba(255,255,255,.7)">Готовая подборка классов к встрече с ЛПР</span></div>
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">По роли заказчика</h2><span style="font-size:14px;color:rgba(255,255,255,.7)">Готовая подборка классов к встрече с ЛПР</span></div>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:12px">
 <sc-for list="{{ entryRoles }}" as="r" hint-placeholder-count="8">
-<button onClick="{{ r.onClick }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:132px;padding:18px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;text-align:left;cursor:pointer;color:#fff;transition:background .16s cubic-bezier(.2,.6,.2,1),border-color .16s" style-hover="background:rgba(0,176,189,.16);border-color:#00B0BD">
+<button onClick="{{ r.onClick }}" data-search-active="{{ r.active }}" style="display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:132px;padding:18px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;text-align:left;cursor:pointer;color:#fff;transition:background .16s cubic-bezier(.2,.6,.2,1),border-color .16s" style-hover="background:rgba(0,176,189,.16);border-color:#00B0BD">
 <span style="font-weight:700;font-size:17px;line-height:1.25">{{ r.label }}</span>
 <span style="font-size:14px;line-height:1.45;color:rgba(255,255,255,.78)">{{ r.text }}</span>
 <span style="margin-top:auto;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#9EE7EE">{{ r.count }}<span style="width:7px;height:7px;border-top:2px solid #00B0BD;border-right:2px solid #00B0BD;transform:rotate(45deg)"></span></span>
@@ -90,7 +96,7 @@
 
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:28px">
 <div style="display:flex;flex-direction:column;gap:14px">
-<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-weight:700;font-size:13px;color:#00B0BD">2</span><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">Где задача заказчика?</h2></div>
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">По зоне предприятия</h2></div>
 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,180px),1fr));gap:8px">
 <sc-for list="{{ entryLayers }}" as="l" hint-placeholder-count="7">
 <button onClick="{{ l.onClick }}" title="{{ l.full }}" style="display:flex;align-items:center;gap:12px;min-height:56px;padding:10px 14px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:14px;text-align:left;cursor:pointer;color:#fff;transition:background .16s cubic-bezier(.2,.6,.2,1),border-color .16s" style-hover="background:rgba(0,176,189,.16);border-color:#00B0BD">
@@ -101,18 +107,19 @@
 </div>
 </div>
 <div style="display:flex;flex-direction:column;gap:14px">
-<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><span style="font-weight:700;font-size:13px;color:#00B0BD">3</span><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">Знаете продукт или производителя?</h2></div>
+<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap"><h2 style="color:#fff;font-weight:700;font-size:clamp(20px,2.2vw,26px);margin:0">По продукту или производителю</h2></div>
 <div style="position:relative">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" on-dark="{{ true }}" type="search" value="{{ q }}" on-change="{{ onQHero }}" on-key-down="{{ onQKey }}" placeholder="Класс, продукт или производитель" aria-label="Поиск по каталогу" hint-size="100%,48px"></x-import>
 <sc-if value="{{ heroSearchOpen }}" hint-placeholder-val="{{ false }}">
 <div style="margin-top:8px;background:#fff;border-radius:16px;box-shadow:0 16px 40px rgba(14,20,37,.35);padding:8px;max-height:360px;overflow-y:auto;color:#1E2849;display:flex;flex-direction:column;gap:2px;scrollbar-width:thin">
 <div style="padding:8px 12px;font-size:12px;color:#5C6270">{{ resLabel }}</div>
 <sc-for list="{{ results }}" as="r" hint-placeholder-count="3">
-<button onClick="{{ r.onClick }}" style="width:100%;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:none;border-radius:10px;background:none;text-align:left;cursor:pointer;color:#1E2849" style-hover="background:#EEF7F8">
+<button onClick="{{ r.onClick }}" data-search-active="{{ r.active }}" style="width:100%;display:flex;flex-direction:column;gap:4px;padding:10px 12px;border:none;border-radius:10px;background:none;text-align:left;cursor:pointer;color:#1E2849" style-hover="background:#EEF7F8">
 <span style="font-size:14px;font-weight:600;line-height:1.35">{{ r.name }}</span>
 <span style="display:flex;align-items:center;gap:6px;font-size:12px;color:#5C6270"><span style="width:8px;height:8px;border-radius:50%;flex-shrink:0;background:{{ r.color }}"></span>{{ r.where }}</span>
+<sc-if value="{{ r.match }}" hint-placeholder-val="{{ false }}"><span class="ux-match">Совпадения: {{ r.match }}</span></sc-if>
 </button>
-</sc-for>
+</sc-for><button class="ux-search-all" onClick="{{ showAllResults }}">Все результаты</button>
 </div>
 </sc-if>
 </div>
@@ -127,11 +134,11 @@
 </div>
 </section>
 
-<section id="map" data-screen-label="02 Подбор" style="scroll-margin-top:64px;position:relative;background:#0E1425;color:#fff;border-top:1px solid rgba(255,255,255,.08)"><sc-if value="{{ loadError }}" hint-placeholder-val="{{ false }}"><div role="alert" class="demo-error">Не удалось загрузить каталог. Запустите сайт через «Запустить.command» и обновите страницу.<button onClick="{{ reloadCatalog }}">Повторить</button></div></sc-if>
+<section id="map" data-screen-label="02 Подбор" style="scroll-margin-top:64px;position:relative;background:#0E1425;color:#fff;border-top:1px solid rgba(255,255,255,.08)"><sc-if value="{{ loadError }}" hint-placeholder-val="{{ false }}"><div role="alert" class="demo-error">Каталог не загрузился. Проверьте подключение и повторите попытку.<button onClick="{{ reloadCatalog }}">Повторить</button></div></sc-if>
 <div style="max-width:1360px;margin:0 auto;padding:24px 20px 48px;display:flex;flex-direction:column;gap:16px">
 <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px">
 <h2 style="color:#fff;font-weight:700;font-size:clamp(22px,2.4vw,28px);margin:0">Подбор решений</h2>
-<a href="#start" style="font-size:14px;font-weight:600;color:#9EE7EE" style-hover="color:#fff">Сменить способ подбора</a>
+<div class="ux-view" role="group" aria-label="Способ просмотра"><button aria-pressed="{{ listSelected }}" onClick="{{ setListView }}">Список</button><button aria-pressed="{{ mapSelected }}" onClick="{{ setMapView }}">Карта</button></div><a href="#start" style="font-size:14px;font-weight:600;color:#9EE7EE" style-hover="color:#fff">Сменить способ подбора</a>
 </div>
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px">
 <span style="font-size:13px;color:rgba(255,255,255,.7);margin-right:4px">Роль ЛПР:</span>
@@ -146,6 +153,11 @@
 </sc-for>
 </div>
 
+<sc-if value="{{ searchAll }}" hint-placeholder-val="{{ false }}"><div class="ux-results">
+<div class="ux-result-heading"><h3>{{ searchHeading }}</h3><button onClick="{{ closeAllResults }}">Скрыть результаты</button></div>
+<sc-if value="{{ noRes }}" hint-placeholder-val="{{ false }}"><p>Совпадений нет. Измените запрос или выберите зону предприятия.</p></sc-if>
+<div class="ux-result-list" aria-label="Найденные классы"><sc-for list="{{ allResults }}" as="r" hint-placeholder-count="0"><button onClick="{{ r.onClick }}" data-search-active="{{ r.active }}"><strong>{{ r.name }}</strong><span>{{ r.where }}</span><sc-if value="{{ r.match }}" hint-placeholder-val="{{ false }}"><span class="ux-match">Совпадения: {{ r.match }}</span></sc-if></button></sc-for></div>
+</div></sc-if>
 <div style="display:grid;gap:24px;grid-template-columns:{{ wsCols }};align-items:start">
 <div style="min-width:0;display:flex;flex-direction:column;gap:12px;order:{{ mainOrder }}">
 
@@ -160,9 +172,9 @@
 <div style="flex-shrink:0"><x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ roleSum.allVariant }}" size="md" on-click="{{ roleSum.toggleAll }}" hint-size="220px,44px">{{ roleSum.allLabel }}</x-import></div>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px 28px;font-size:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,.14)">
-<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:rgba(255,255,255,.65)">В подборке</span><span style="font-weight:600">{{ roleSum.count }}</span></div>
-<div style="display:flex;flex-direction:column;gap:2px;align-items:flex-start"><span style="font-size:12px;color:rgba(255,255,255,.65)">Повод для разговора</span><sc-if value="{{ roleSum.trigger }}" hint-placeholder-val="{{ true }}"><span style="font-weight:600">{{ roleSum.trigger }}</span></sc-if><sc-if value="{{ roleSum.noTrigger }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных]</span></sc-if></div>
-<sc-if value="{{ roleSum.link }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><span style="font-size:12px;color:rgba(255,255,255,.65)">ИБ-направление Axoft</span><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных: URL]</span></div></sc-if>
+<div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12px;color:rgba(255,255,255,.65)">Подходит для роли</span><span style="font-weight:600">{{ roleSum.count }}</span><span>Выбрано: {{ roleSum.selected }}</span></div>
+<sc-if value="{{ roleSum.trigger }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:2px;align-items:flex-start"><span style="font-size:12px;color:rgba(255,255,255,.65)">Повод для разговора</span><sc-if value="{{ roleSum.trigger }}" hint-placeholder-val="{{ true }}"><span style="font-weight:600">{{ roleSum.trigger }}</span></sc-if><sc-if value="{{ roleSum.noTrigger }}" hint-placeholder-val="{{ false }}"></sc-if></div></sc-if>
+<sc-if value="{{ roleSum.link }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-direction:column;gap:4px;align-items:flex-start"><span style="font-size:12px;color:rgba(255,255,255,.65)">ИБ-направление Axoft</span></div></sc-if>
 </div>
 </div>
 <sc-for list="{{ roleGroups }}" as="g" hint-placeholder-count="3">
@@ -190,9 +202,9 @@
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ k.variant }}" on-dark="{{ true }}" size="sm" on-click="{{ k.toggle }}" aria-label="{{ k.btnAria }}" hint-size="90px,32px">{{ k.btnShort }}</x-import>
 </div>
 <sc-if value="{{ k.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 8px 12px 27px"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-<sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
+<sc-if value="{{ k.match }}" hint-placeholder-val="{{ false }}"><div class="ux-match">Совпадения: {{ k.match }}</div></sc-if><sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
 <sc-if value="{{ k.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.toggleMore }}" style="padding:3px 8px;border:none;background:none;color:#00B0BD;font-size:13px;font-weight:600;cursor:pointer" style-hover="color:#fff">{{ k.moreLabel }}</button></sc-if>
-<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции – [требует данных]</span></sc-if>
+<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции каталога пока не указаны</span></sc-if>
 </div></div></sc-if>
 </div>
 </sc-for>
@@ -238,7 +250,7 @@
 <sc-for list="{{ panel.risks }}" as="rk" hint-placeholder-count="4"><div style="display:flex;gap:10px;font-size:14px;line-height:1.4;color:rgba(255,255,255,.88)"><span style="flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#00B27C;margin-top:7px"></span>{{ rk }}</div></sc-for>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#fff">Классы решений для зоны <span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных: сопоставление]</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#fff">Связь рисков с конкретными классами пока не указана </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="secondary" size="sm" on-click="{{ openIbClasses }}" hint-size="180px,32px">Классы решений ИБ</x-import>
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="outline" on-dark="{{ true }}" size="sm" on-click="{{ openIbScheme }}" hint-size="240px,32px">Схема кибербезопасности (OT)</x-import>
@@ -246,7 +258,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ panel.roleFallback }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(255,255,255,.8);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.06)">{{ panel.roleFallback }}</div></sc-if>
-<sc-if value="{{ panel.empty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,.75)">Классы зоны на исправлении у аналитиков <span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных]</span></div></sc-if>
+<sc-if value="{{ panel.empty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,.75)">Классы решений для этой зоны пока не указаны в каталоге. </div></sc-if>
 <sc-if value="{{ panel.hasClasses }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ panel.allVariant }}" size="sm" full-width="{{ true }}" on-click="{{ panel.toggleAll }}" hint-size="100%,36px">{{ panel.allLabel }}</x-import>
 </sc-if>
@@ -267,9 +279,9 @@
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ k.variant }}" on-dark="{{ true }}" size="sm" on-click="{{ k.toggle }}" aria-label="{{ k.btnAria }}" hint-size="90px,32px">{{ k.btnShort }}</x-import>
 </div>
 <sc-if value="{{ k.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 8px 12px 27px"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-<sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
+<sc-if value="{{ k.match }}" hint-placeholder-val="{{ false }}"><div class="ux-match">Совпадения: {{ k.match }}</div></sc-if><sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
 <sc-if value="{{ k.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.toggleMore }}" style="padding:3px 8px;border:none;background:none;color:#00B0BD;font-size:13px;font-weight:600;cursor:pointer" style-hover="color:#fff">{{ k.moreLabel }}</button></sc-if>
-<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции – [требует данных]</span></sc-if>
+<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции каталога пока не указаны</span></sc-if>
 </div></div></sc-if>
 </div>
 </sc-for>
@@ -281,9 +293,9 @@
 </div>
 </sc-if>
 <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
-<div onClick="{{ closeZone }}" style="position:fixed;inset:0;background:rgba(14,20,37,.55);z-index:55"></div>
+<div data-ux-backdrop="true" onClick="{{ closeZone }}" style="position:fixed;inset:0;background:rgba(14,20,37,.55);z-index:55"></div>
 <sc-if value="{{ panel }}" hint-placeholder-val="{{ false }}">
-<div style="{{ panelStyle }}">
+<div role="dialog" aria-modal="true" aria-label="Классы выбранной зоны" data-ux-dialog="zone" tabindex="-1" style="{{ panelStyle }}">
 <sc-if value="{{ mobile }}" hint-placeholder-val="{{ false }}"><div style="width:44px;height:4px;border-radius:2px;background:rgba(255,255,255,.35);margin:0 auto 12px"></div></sc-if>
 <div style="display:flex;flex-direction:column;gap:14px">
 <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
@@ -300,7 +312,7 @@
 <sc-for list="{{ panel.risks }}" as="rk" hint-placeholder-count="4"><div style="display:flex;gap:10px;font-size:14px;line-height:1.4;color:rgba(255,255,255,.88)"><span style="flex-shrink:0;width:6px;height:6px;border-radius:50%;background:#00B27C;margin-top:7px"></span>{{ rk }}</div></sc-for>
 </div>
 <div style="display:flex;flex-direction:column;gap:10px">
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#fff">Классы решений для зоны <span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных: сопоставление]</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:14px;font-weight:600;color:#fff">Связь рисков с конкретными классами пока не указана </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="secondary" size="sm" on-click="{{ openIbClasses }}" hint-size="180px,32px">Классы решений ИБ</x-import>
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="outline" on-dark="{{ true }}" size="sm" on-click="{{ openIbScheme }}" hint-size="240px,32px">Схема кибербезопасности (OT)</x-import>
@@ -308,7 +320,7 @@
 </div>
 </sc-if>
 <sc-if value="{{ panel.roleFallback }}" hint-placeholder-val="{{ false }}"><div style="font-size:13px;color:rgba(255,255,255,.8);padding:8px 12px;border-radius:10px;background:rgba(255,255,255,.06)">{{ panel.roleFallback }}</div></sc-if>
-<sc-if value="{{ panel.empty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,.75)">Классы зоны на исправлении у аналитиков <span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных]</span></div></sc-if>
+<sc-if value="{{ panel.empty }}" hint-placeholder-val="{{ false }}"><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;color:rgba(255,255,255,.75)">Классы решений для этой зоны пока не указаны в каталоге. </div></sc-if>
 <sc-if value="{{ panel.hasClasses }}" hint-placeholder-val="{{ true }}">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ panel.allVariant }}" size="sm" full-width="{{ true }}" on-click="{{ panel.toggleAll }}" hint-size="100%,36px">{{ panel.allLabel }}</x-import>
 </sc-if>
@@ -329,9 +341,9 @@
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="{{ k.variant }}" on-dark="{{ true }}" size="sm" on-click="{{ k.toggle }}" aria-label="{{ k.btnAria }}" hint-size="90px,32px">{{ k.btnShort }}</x-import>
 </div>
 <sc-if value="{{ k.open }}" hint-placeholder-val="{{ false }}"><div style="padding:0 8px 12px 27px"><div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">
-<sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
+<sc-if value="{{ k.match }}" hint-placeholder-val="{{ false }}"><div class="ux-match">Совпадения: {{ k.match }}</div></sc-if><sc-for list="{{ k.shown }}" as="it" hint-placeholder-count="3"><span style="padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.92);font-size:13px;line-height:1.35">{{ it }}</span></sc-for>
 <sc-if value="{{ k.more }}" hint-placeholder-val="{{ false }}"><button onClick="{{ k.toggleMore }}" style="padding:3px 8px;border:none;background:none;color:#00B0BD;font-size:13px;font-weight:600;cursor:pointer" style-hover="color:#fff">{{ k.moreLabel }}</button></sc-if>
-<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции – [требует данных]</span></sc-if>
+<sc-if value="{{ k.noItems }}" hint-placeholder-val="{{ false }}"><span style="display:inline-flex;align-items:center;padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">Позиции каталога пока не указаны</span></sc-if>
 </div></div></sc-if>
 </div>
 </sc-for>
@@ -343,7 +355,7 @@
 </sc-if>
 </div>
 
-<div style="min-width:0;position:{{ asidePos }};top:80px;display:flex;flex-direction:column;gap:8px;order:{{ asideOrder }}">
+<div style="min-width:0;position:{{ asidePos }};top:80px;display:{{ sceneDisplay }};flex-direction:column;gap:8px;order:{{ asideOrder }}">
 <div ref="{{ sceneRef }}" style="position:relative;min-width:0;min-height:220px"></div>
 <div style="font-size:13px;color:rgba(255,255,255,.65)">{{ sceneHint }}</div>
 </div>
@@ -371,7 +383,7 @@
 <div style="display:flex;flex-direction:column;gap:12px">
 <h2 style="color:#fff;font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.2;margin:0">Цифровое производство: SCADA, MES, IoT</h2>
 <div style="width:64px;height:3px;border-radius:2px;background:linear-gradient(90deg,#00B27C,#00B0BD,#00ADEF)"></div>
-<p style="font-size:18px;color:rgba(255,255,255,.8);max-width:62ch;margin:0">Фокус промышленного направления Axoft – связка уровней от контроллера до управления производством.</p>
+<p style="font-size:18px;color:rgba(255,255,255,.8);max-width:62ch;margin:0">Фокус промышленного направления Axoft - связка уровней от контроллера до управления производством.</p>
 </div>
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-weight:700;font-size:clamp(18px,2.4vw,24px)">
 <span style="padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.3)">ПЛК</span><span style="color:#00B0BD">→</span>
@@ -387,7 +399,7 @@
 </div>
 <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="lg" on-click="{{ addPrio }}" hint-size="260px,52px">{{ prioBtn }}</x-import>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px dashed rgba(255,255,255,.5);background:rgba(255,255,255,.06);font-size:14px">Как продукты стыкуются между собой и с ERP / 1С <span style="font-weight:600;color:rgba(255,255,255,.85)">[требует данных]</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px dashed rgba(255,255,255,.5);background:rgba(255,255,255,.06);font-size:14px">Совместимость продуктов с ERP / 1С требует уточнения </div>
 </div>
 </div>
 </section>
@@ -439,7 +451,7 @@
 <div style="display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:3px solid #00ADEF"><div style="font-weight:700;font-size:28px;color:#00ADEF">05</div><div style="font-weight:700;font-size:17px">Спецификация и условия</div><div style="font-size:14px;line-height:1.45;color:#5C6270">включая Axoft Finance и Лизинг.</div></div>
 <div style="display:flex;flex-direction:column;gap:10px;padding-top:16px;border-top:3px solid #1E2849"><div style="font-weight:700;font-size:28px;color:#1E2849">06</div><div style="font-weight:700;font-size:17px">Сделка</div><div style="font-size:14px;line-height:1.45;color:#5C6270">через вас как партнёра.</div></div>
 </div>
-<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:#5C6270">Предполагаемый процесс для рабочей версии. В демоверсии запрос не отправляется. Процесс уточняется <span style="padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;font-size:12px;font-weight:600">[требует данных]</span></div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:13px;color:#5C6270">Предполагаемый процесс для рабочей версии. В демоверсии запрос не отправляется. Условия и ответственный специалист уточняются для конкретного проекта.</div>
 </div>
 </section>
 
@@ -454,7 +466,7 @@
 <div style="background:#fff;border:1px solid {{ f.bd }};border-radius:14px">
 <button onClick="{{ f.onClick }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px;border:none;background:none;color:#1E2849;font-size:16px;font-weight:600;text-align:left;cursor:pointer">{{ f.q }}<span style="flex-shrink:0;width:28px;height:28px;border-radius:50%;border:1.5px solid #00B0BD;color:#007E88;display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1">{{ f.sign }}</span></button>
 <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}">
-<div style="padding:0 20px 18px;font-size:15px;line-height:1.55;color:#1E2849;display:flex;flex-wrap:wrap;align-items:center;gap:4px">{{ f.pre }}<sc-if value="{{ f.tbd }}" hint-placeholder-val="{{ false }}"><span style="padding:2px 8px;border:1px dashed #A5A5A5;border-radius:6px;background:#F4F5F7;color:#5C6270;font-size:12px;font-weight:600">[требует данных]</span>{{ f.post }}</sc-if></div>
+<div style="padding:0 20px 18px;font-size:15px;line-height:1.55;color:#1E2849;display:flex;flex-wrap:wrap;align-items:center;gap:4px">{{ f.pre }}<sc-if value="{{ f.tbd }}" hint-placeholder-val="{{ false }}">{{ f.post }}</sc-if></div>
 </sc-if>
 </div>
 </sc-for>
@@ -468,7 +480,7 @@
 <div style="display:flex;flex-direction:column;gap:12px;color:#fff">
 <h2 style="color:#fff;font-weight:700;font-size:clamp(28px,4vw,40px);line-height:1.2;margin:0">Подобрать решение под задачу заказчика</h2>
 <div style="width:64px;height:3px;border-radius:2px;background:linear-gradient(90deg,#00B27C,#00B0BD,#00ADEF)"></div>
-<p style="font-size:18px;color:rgba(255,255,255,.8);max-width:62ch;margin:0">Подборка с карты уже в форме. Опишите задачу и сохраните запрос. В демоверсии данные не отправляются в Axoft.</p>
+<p style="font-size:18px;color:rgba(255,255,255,.8);max-width:62ch;margin:0">Выбранные классы уже в форме. Опишите задачу и сохраните запрос. В демоверсии данные не отправляются в Axoft.</p>
 </div>
 <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
 <div style="background:#fff;border-radius:20px;padding:clamp(24px,4vw,40px);display:flex;flex-direction:column;gap:14px;align-items:flex-start">
@@ -479,11 +491,8 @@
 </sc-if>
 <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
 <form onSubmit="{{ submit }}" noValidate="{{ true }}" style="background:#fff;border-radius:20px;padding:clamp(20px,4vw,40px);display:flex;flex-direction:column;gap:22px">
-<div style="font-size:13px;color:#5C6270">Демоверсия · используйте тестовые данные. * – обязательные поля</div>
+<div style="font-size:13px;color:#5C6270">Обязательна только задача заказчика. Контакты можно оставить пустыми.</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px">
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="ФИО *" value="{{ form.fio }}" on-change="{{ on.fio }}" error="{{ errors.fio }}" hint-size="100%,76px"></x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Компания-партнёр *" value="{{ form.company }}" on-change="{{ on.company }}" error="{{ errors.company }}" hint-size="100%,76px"></x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Телефон, e-mail *" value="{{ form.contact }}" on-change="{{ on.contact }}" error="{{ errors.contact }}" hint-size="100%,76px"></x-import>
 <div style="display:flex;flex-direction:column;gap:6px">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Select" label="Задача заказчика *" placeholder="Выберите задачу" options="{{ taskOpts }}" value="{{ form.task }}" on-change="{{ on.task }}" hint-size="100%,76px"></x-import>
 <sc-if value="{{ errors.task }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--status-danger,#C0392B)">{{ errors.task }}</span></sc-if>
@@ -491,18 +500,21 @@
 </div>
 <label style="display:flex;flex-direction:column;gap:8px;font-size:14px;font-weight:600">Комментарий к задаче<textarea value="{{ form.comment }}" onInput="{{ on.comment }}" rows="3" style="width:100%;padding:12px 16px;border:1px solid #BFBFBF;border-radius:8px;font:inherit;font-size:15px;font-weight:400;color:#1E2849;outline:none;resize:vertical" style-focus="border-color:#00B0BD;outline:2px solid #00ADEF;outline-offset:2px"></textarea></label>
 <div style="display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:14px;border:1px solid #00B0BD">
-<div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="font-size:14px;font-weight:600">Подборка · {{ stackCount }}</div><a href="#map" style="font-size:13px;font-weight:600">Добавить с карты</a></div>
-<sc-if value="{{ stackEmpty }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:#5C6270">Подборка пуста – добавьте классы решений на карте.</div></sc-if>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px"><div style="font-size:14px;font-weight:600">Выбранные классы · {{ stackCount }}</div><a href="#map" style="font-size:13px;font-weight:600">Добавить классы</a></div>
+<sc-if value="{{ stackEmpty }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:#5C6270">Классы не выбраны. Добавьте их из списка или с карты.</div></sc-if>
 <sc-for list="{{ stackList }}" as="s" hint-placeholder-count="0">
 <div style="display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-top:1px solid #E7E6E6"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">{{ s.name }}</div><div style="font-size:12px;color:#5C6270">{{ s.zone }}</div></div><button type="button" onClick="{{ s.remove }}" style="flex-shrink:0;padding:4px 10px;border-radius:999px;border:1px solid #BFBFBF;background:#fff;color:#1E2849;font-size:12px;cursor:pointer" style-hover="border-color:#00B0BD">Убрать</button></div>
 </sc-for>
 <textarea value="{{ form.extra }}" onInput="{{ on.extra }}" rows="2" placeholder="Дополнить подборку вручную" style="width:100%;padding:10px 12px;border:1px solid #BFBFBF;border-radius:8px;font:inherit;font-size:14px;color:#1E2849;outline:none;resize:vertical" style-focus="border-color:#00B0BD"></textarea>
 </div>
 <div style="display:flex;flex-direction:column;gap:18px;padding-top:18px;border-top:1px solid #E7E6E6">
-<div style="font-size:15px;font-weight:700">Дополнительно – необязательно</div>
+<details class="ux-extra"><summary>Дополнительные сведения - необязательно</summary><div class="ux-contact-grid"><x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="ФИО" value="{{ form.fio }}" on-change="{{ on.fio }}" error="{{ errors.fio }}" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Компания-партнёр" value="{{ form.company }}" on-change="{{ on.company }}" error="{{ errors.company }}" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Телефон, e-mail" value="{{ form.contact }}" on-change="{{ on.contact }}" error="{{ errors.contact }}" hint-size="100%,76px"></x-import>
+</div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:18px">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="ИНН компании" error="{{ errors.inn }}" value="{{ form.inn }}" on-change="{{ on.inn }}" input-mode="numeric" hint-size="100%,76px"></x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Отрасль заказчика (ОКВЭД)" value="{{ form.okved }}" on-change="{{ on.okved }}" hint-size="100%,76px"></x-import>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Input" label="Отрасль заказчика" value="{{ form.okved }}" on-change="{{ on.okved }}" hint-size="100%,76px"></x-import>
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Select" label="Роль ЛПР заказчика" placeholder="Выберите роль" options="{{ lprOpts }}" value="{{ form.lpr }}" on-change="{{ on.lpr }}" hint-size="100%,76px"></x-import>
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Select" label="Срок проекта" placeholder="Выберите срок" options="{{ termOpts }}" value="{{ form.term }}" on-change="{{ on.term }}" hint-size="100%,76px"></x-import>
 </div>
@@ -514,11 +526,8 @@
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Switch" label="Нужен пилот" checked="{{ form.pilot }}" on-change="{{ on.pilot }}" hint-size="160px,24px"></x-import>
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Switch" label="Нужны финансовые сервисы" checked="{{ form.fin }}" on-change="{{ on.fin }}" hint-size="260px,24px"></x-import>
 </div>
-</div>
-<div style="display:flex;flex-direction:column;gap:6px">
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Checkbox" label="Понимаю, что это демоверсия без отправки данных *" checked="{{ form.consent }}" on-change="{{ on.consent }}" hint-size="280px,24px"></x-import>
-<sc-if value="{{ errors.consent }}" hint-placeholder-val="{{ false }}"><span style="font-size:12px;color:var(--status-danger,#C0392B)">{{ errors.consent }}</span></sc-if>
-</div>
+</details></div>
+<p class="ux-demo-note">Запрос сохраняется в файл. Отправка в Axoft не выполняется.</p>
 <div style="display:flex;flex-direction:column;gap:14px;align-items:flex-start">
 <x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="lg" type="submit" hint-size="220px,52px">Подготовить запрос</x-import>
 <div style="font-size:13px;color:#5C6270">В рабочей версии здесь можно подключить передачу запроса ответственному специалисту Axoft.</div>
@@ -538,16 +547,16 @@
 
 
 <sc-if value="{{ stackOpen }}" hint-placeholder-val="{{ false }}">
-<div onClick="{{ closeStack }}" style="position:fixed;inset:0;background:rgba(14,20,37,.55);z-index:70"></div>
-<div style="position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#fff;z-index:80;display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(30,40,73,.2)">
-<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px;border-bottom:1px solid #E7E6E6"><div style="font-weight:700;font-size:20px">Подборка: {{ stackCount }}</div><button onClick="{{ closeStack }}" style="padding:6px 12px;border-radius:999px;border:1px solid #BFBFBF;background:#fff;color:#1E2849;font-size:13px;cursor:pointer">Закрыть</button></div>
+<div data-ux-backdrop="true" onClick="{{ closeStack }}" style="position:fixed;inset:0;background:rgba(14,20,37,.55);z-index:70"></div>
+<div role="dialog" aria-modal="true" aria-label="Выбранные классы решений" data-ux-dialog="stack" tabindex="-1" style="position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:#fff;z-index:80;display:flex;flex-direction:column;box-shadow:-8px 0 32px rgba(30,40,73,.2)">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px;border-bottom:1px solid #E7E6E6"><div style="font-weight:700;font-size:20px">Классы: {{ stackCount }}</div><button onClick="{{ closeStack }}" style="padding:6px 12px;border-radius:999px;border:1px solid #BFBFBF;background:#fff;color:#1E2849;font-size:13px;cursor:pointer">Закрыть</button></div>
 <div style="flex:1;overflow-y:auto;padding:8px 20px">
-<sc-if value="{{ stackEmpty }}" hint-placeholder-val="{{ true }}"><div style="padding:16px 0;font-size:14px;color:#5C6270">Подборка пуста – добавьте классы решений на карте.</div></sc-if>
+<sc-if value="{{ stackEmpty }}" hint-placeholder-val="{{ true }}"><div style="padding:16px 0;font-size:14px;color:#5C6270">Классы не выбраны. Добавьте их из списка или с карты.</div></sc-if>
 <sc-for list="{{ stackList }}" as="s" hint-placeholder-count="0">
 <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #E7E6E6"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><div style="font-size:14px;font-weight:600">{{ s.name }}</div><div style="font-size:12px;color:#5C6270">{{ s.zone }}</div></div><button onClick="{{ s.remove }}" style="flex-shrink:0;padding:4px 10px;border-radius:999px;border:1px solid #BFBFBF;background:#fff;color:#1E2849;font-size:12px;cursor:pointer">Убрать</button></div>
 </sc-for>
 </div>
-<div style="padding:20px;border-top:1px solid #E7E6E6"><x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="md" full-width="{{ true }}" on-click="{{ toRequest }}" hint-size="100%,44px">Перейти к заявке</x-import></div>
+<div style="padding:20px;border-top:1px solid #E7E6E6"><p>Выбраны классы. Позиции каталога внутри класса служат справкой.</p><sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button class="demo-secondary" onClick="{{ undoSelection }}">Отменить последнее изменение</button></sc-if><x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="md" full-width="{{ true }}" on-click="{{ toRequest }}" hint-size="100%,44px">Подготовить запрос</x-import></div>
 </div>
 </sc-if>
 
@@ -555,9 +564,10 @@
 <div style="position:fixed;left:0;right:0;bottom:0;z-index:50;background:rgba(14,20,37,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(0,176,189,.55)">
 <div style="max-width:1360px;margin:0 auto;padding:10px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;color:#fff">
 <div style="display:flex;align-items:center;gap:10px;flex:1 1 200px;min-width:0"><span style="flex-shrink:0;min-width:32px;height:32px;padding:0 8px;border-radius:999px;background:#00B27C;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;transform:scale({{ bumpScale }});transition:transform .2s cubic-bezier(.2,.6,.2,1)">{{ stackCount }}</span><span style="font-size:14px;font-weight:600">{{ stackBarText }}</span></div>
-<div style="display:flex;gap:8px;flex-shrink:0">
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="outline" on-dark="{{ true }}" size="sm" on-click="{{ openStack }}" hint-size="120px,36px">Посмотреть</x-import>
-<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="sm" on-click="{{ toRequest }}" hint-size="190px,36px">Подобрать решение</x-import>
+<div class="ux-bar-actions" style="display:flex;gap:8px;flex-shrink:0">
+<sc-if value="{{ canUndo }}" hint-placeholder-val="{{ false }}"><button class="ux-bar-undo" onClick="{{ undoSelection }}">Отменить</button></sc-if>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="outline" on-dark="{{ true }}" size="sm" on-click="{{ openStack }}" hint-size="120px,36px">{{ stackReviewLabel }}</x-import>
+<x-import component-from-global-scope="AxoftDesignSystem_00998b.Button" variant="primary" size="sm" on-click="{{ toRequest }}" hint-size="190px,36px">{{ stackRequestLabel }}</x-import>
 </div>
 </div>
 </div>
@@ -567,18 +577,18 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script>
 const SHORT={prod:'Производство',adm:'Админ. персонал',it:'IT-инфраструктура',ib:'ИБ',eq1:'Цех и АСУ ТП',eq2:'Общезаводская инфраструктура',tech:'Техоборудование'};
-const REQ=['fio','company','contact','task','consent'];
+const REQ=['task'];
 const LS='axoft-industry-demo-stack-v1';
 const plural=n=>{const a=n%10,b=n%100;return n+' '+(a===1&&b!==11?'класс':a>=2&&a<=4&&(b<10||b>=20)?'класса':'классов')};
-const shortName=n=>{let s=n.split(/,| \(| – |: /)[0].trim();if(s.length>26){const c=s.slice(0,24),sp=c.lastIndexOf(' ');s=(sp>12?c.slice(0,sp):c)+'…'}return s};
+const shortName=n=>{let s=n.split(/,| \(| - |: /)[0].trim();if(s.length>26){const c=s.slice(0,24),sp=c.lastIndexOf(' ');s=(sp>12?c.slice(0,sp):c)+'…'}return s};
 const LAYERS=[
-{id:'prod',name:'Производство',csv:'Производство',color:'#1E2849',fg:'#fff',plate:'rgba(30,40,73,.85)',caption:'17 зон – от ПЛК и MES до конструкторского бюро, автопарка и антидрона'},
-{id:'adm',name:'Административный персонал',csv:'Административный персонал',color:'#00B0BD',fg:'#1E2849',plate:'rgba(0,176,189,.55)',caption:'14 зон – рабочее место, коммуникации, финансы, кадры, контактный центр – на технологиях из России и дружественных стран'},
+{id:'prod',name:'Производство',csv:'Производство',color:'#1E2849',fg:'#fff',plate:'rgba(30,40,73,.85)',caption:'17 зон - от ПЛК и MES до конструкторского бюро, автопарка и антидрона'},
+{id:'adm',name:'Административный персонал',csv:'Административный персонал',color:'#00B0BD',fg:'#1E2849',plate:'rgba(0,176,189,.55)',caption:'14 зон - рабочее место, коммуникации, финансы, кадры, контактный центр - на технологиях из России и дружественных стран'},
 {id:'it',name:'IT-инфраструктура',csv:'IT-инфраструктура',color:'#00B27C',fg:'#1E2849',plate:'rgba(0,178,124,.5)',caption:'Резервное копирование, службы каталогов, мониторинг, виртуализация, серверные ОС, балансировка'},
 {id:'ib',name:'ИБ',csv:'Информационная безопасность',color:'#00B27C',fg:'#1E2849',plate:'rgba(0,178,124,.35)',caption:'12 зон риска: сначала риск, затем классы решений и производители'},
 {id:'eq1',name:'Оборудование: цех и АСУ ТП',csv:'Оборудование: цех и АСУ ТП',color:'#00ADEF',fg:'#1E2849',plate:'rgba(0,173,239,.5)',caption:'Промышленная сеть, защищённые устройства, серверы под MES и SCADA, промышленные камеры, периметр КИИ'},
 {id:'eq2',name:'Оборудование: общезаводская инфраструктура',csv:'Оборудование: общезаводская инфраструктура',color:'#00ADEF',fg:'#1E2849',plate:'rgba(0,173,239,.35)',caption:'ЦОД, сеть предприятия, АРМ, ситуационный центр, безопасность объекта, печать'},
-{id:'tech',name:'Технологическое оборудование',csv:'Технологическое оборудование',color:'#00ADEF',fg:'#1E2849',plate:'rgba(0,173,239,.22)',caption:'Лазерные источники, сварка, резка и роботизированная обработка – VPG LaserONE'}];
+{id:'tech',name:'Технологическое оборудование',csv:'Технологическое оборудование',color:'#00ADEF',fg:'#1E2849',plate:'rgba(0,173,239,.22)',caption:'Лазерные источники, сварка, резка и роботизированная обработка - VPG LaserONE'}];
 const ROLES=[
 {id:'cto',key:'Главный инженер, АСУ ТП (CTO)',label:'Главный инженер, АСУ ТП',hero:true,text:'Импортозамещение АСУ ТП и прозрачность производства: ПЛК → SCADA → MES → IoT, с пилотом до закупки',zonesText:'П-2, П-3, П-6, П-13, П-14, Т-1…Т-6, периметр КИИ',trigger:'Импортозамещение АСУ ТП; мониторинг и управление производством',codes:['П-2','П-3','П-6','П-13','П-14','Т-1','Т-2','Т-3','Т-4','Т-5','Т-6','КИИ'],layer:'prod'},
 {id:'cio',key:'CIO',label:'CIO',hero:true,text:'Российские решения инфраструктуры, данных и рабочих мест + готовые программно-аппаратные комплексы',zonesText:'IT-инфраструктура, П-7, П-11, П-12, А-1, А-4, А-9, А-10, ЦОД, сеть, П-17',trigger:'Нацпроект «Цифра»',codes:['И','П-7','П-11','П-12','А-1','А-4','А-9','А-10','ЦОД','Сеть','П-17'],layer:'it'},
@@ -601,15 +611,15 @@ const RISKS=[
 ['Внешние сотрудники',['Низкий уровень защищенности устройств, кража, потеря, доступ 3-их лиц']],
 ['DMZ',['Несанкционированный доступ','Безопасность БД, веб-приложений','Отказы внутренних сервисов','Нерегулярное тестирование уязвимостей DMZ','Нерегулярное устранение уязвимостей ПО и инфраструктуры']],
 ['Привилегированные пользователи',['Высокая цена ошибки','Несанкционированный доступ к корпоративным ресурсам','Неограниченный доступ к ресурсам и изменениям']]];
-const PRIO_CLASSES=['MES – управление производством','SCADA/АСУТП','IoT и сопутствующее оборудование'];
+const PRIO_CLASSES=['MES - управление производством','SCADA/АСУТП','IoT и сопутствующее оборудование'];
 const FAQ=[
-{q:'Можно ли проверить решение до закупки?',pre:'Да: пилот на своём оборудовании, дистанционные и очные демонстрационные стенды. Как заказать пилот –',tbd:true,post:'.'},
-{q:'Какие финансовые условия есть для заказчика?',pre:'Axoft Finance: отсрочка 30–120 дней, рассрочка 30–365 дней. Axoft Лизинг: лизинг и аренда 12–36 мес. Требования к заказчику –',tbd:true,post:'.'},
-{q:'Есть ли решения для объектов КИИ?',pre:'В портфеле есть Инспарк ПРО для объектов КИИ, однонаправленные шлюзы для периметра КИИ и классы защиты АСУ ТП – смотрите раздел ИБ и отметки OT/КИИ в классах решений.'},
+{q:'Можно ли проверить решение до закупки?',pre:'Да: пилот на своём оборудовании, дистанционные и очные демонстрационные стенды. Порядок организации пилота уточняется для конкретного проекта',tbd:false,post:''},
+{q:'Какие финансовые условия есть для заказчика?',pre:'Axoft Finance: отсрочка 30–120 дней, рассрочка 30–365 дней. Axoft Лизинг: лизинг и аренда 12–36 мес. Требования к заказчику уточняются для конкретного проекта',tbd:false,post:''},
+{q:'Есть ли решения для объектов КИИ?',pre:'В портфеле есть Инспарк ПРО для объектов КИИ, однонаправленные шлюзы для периметра КИИ и классы защиты АСУ ТП - смотрите раздел ИБ и отметки OT/КИИ в классах решений.'},
 {q:'Работаете ли вы с Oracle?',pre:'В презентации Axoft указаны программно-аппаратные комплексы под высоконагруженные СУБД, в том числе Oracle и PostgreSQL / Postgres Pro. Условия поставки и совместимость уточняются для конкретного проекта.'},
 {q:'Как работает заявка в демоверсии?',pre:'Запрос можно подготовить и скачать в файл. Передача в Axoft не подключена. Требования к статусу партнёра необходимо определить перед запуском рабочей версии.'},
 {q:'Что делать, если нужного класса нет на карте?',pre:'В форме запроса есть поле для дополнения подборки вручную. Наличие решения и условия поставки затем уточняются у специалиста Axoft.'},
-{q:'Есть ли техподдержка?',pre:'Техподдержка 1 и 2 линии. Для каких производителей –',tbd:true,post:'.'}];
+{q:'Есть ли техподдержка?',pre:'Техподдержка 1 и 2 линии. Для каких производителей –',tbd:false,post:''}];
 const U=22,CS=0.866,SN=0.5,GW=30,GD=22;
 const P=(x,y,z)=>[(x-y)*CS*U,(x+y)*SN*U-z*U];
 const pts=a=>a.map(p=>p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
@@ -808,7 +818,7 @@ const SceneView=React.memo(function SceneView({host,layer,role,zone,ver,mobile,m
 });
 class Component extends DCLogic {
   state=(()=>{let st=[];try{st=JSON.parse(localStorage.getItem(LS)||'[]')}catch(e){}
-    return {data:null,loadError:false,layer:'prod',zone:null,role:null,stack:Array.isArray(st)?st:[],stackOpen:false,q:'',flash:null,expanded:{},openCls:{},toast:null,bump:false,faq:null,
+    return {data:null,loadError:false,layer:'prod',zone:null,role:null,stack:Array.isArray(st)?st:[],stackOpen:false,view:'list',searchIndex:-1,searchAll:false,q:'',qSrc:'head',undoStack:null,flash:null,expanded:{},openCls:{},toast:null,bump:false,faq:null,
     form:{fio:'',company:'',inn:'',ptype:'',isPartner:'',okved:'',lpr:'',task:'',comment:'',extra:'',pilot:false,fin:false,term:'',contact:'',consent:false},
     errors:{},sent:false,w:typeof window!=='undefined'?window.innerWidth:1280}})();
   ver=0;
@@ -819,7 +829,7 @@ class Component extends DCLogic {
   componentDidMount(){
     this.onResize=()=>{if(window.innerWidth!==this.state.w)this.setState({w:window.innerWidth})};
     window.addEventListener('resize',this.onResize);this.onResize();
-    this.onKey=e=>{if(e.key==='Escape')this.setState({stackOpen:false,zone:this.state.w<900?null:this.state.zone,q:''})};window.addEventListener('keydown',this.onKey);
+    this.onKey=e=>{if(e.key==='Escape')this.setState({stackOpen:false,zone:this.state.w<900?null:this.state.zone,qSrc:'results'})};window.addEventListener('keydown',this.onKey);
     fetch('data/catalog.json').then(r=>{if(!r.ok)throw new Error('catalog');return r.json()}).then(data=>{this.build(data);this.ver++;this.setState(s=>({data,stack:s.stack.filter(id=>this.byId[id])}))}).catch(()=>this.setState({loadError:true}));
   }
   componentDidUpdate(){this.renderScene()}
@@ -828,7 +838,7 @@ class Component extends DCLogic {
     const Z={},by={};LAYERS.forEach(L=>by[L.id]=[]);
     RISKS.forEach(([n,r],i)=>{const z={key:'ib|r'+i,layer:'ib',code:String(i+1),name:n,risks:r,classes:[]};Z[z.key]=z;by.ib.push(z)});
     this.byId={};
-    data.forEach(c=>{const L=LAYERS.find(l=>l.csv===c.layer);c.L=L;this.byId[c.id]=c;const key=L.id+'|'+c.code;
+    data.forEach(c=>{c.name=c.name.replace(/ – /g,' - ');const L=LAYERS.find(l=>l.csv===c.layer);c.L=L;this.byId[c.id]=c;const key=L.id+'|'+c.code;
       if(!Z[key]){Z[key]={key,layer:L.id,code:c.code,name:c.zone,classes:[]};by[L.id].push(Z[key])}
       Z[key].classes.push(c)});
     if(!Z['prod|П-16']){const z={key:'prod|П-16',layer:'prod',code:'П-16',name:'Планшет руководителя',classes:[]};Z[z.key]=z;by.prod.push(z)}
@@ -838,24 +848,24 @@ class Component extends DCLogic {
   }
   inRole(z,r){return !!r&&(r.allLayer===z.layer||r.codes.includes(z.code))}
   zoneRoles(z){return ROLES.filter(r=>this.inRole(z,r)||z.classes.some(c=>c.roles.includes(r.key))).map(r=>r.label)}
-  go(id){setTimeout(()=>{const el=document.getElementById(id);if(el)window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-(id==='map'?(this.state.w<900?116:64):(this.state.w<900?124:72))),behavior:'smooth'})},40)}
-  setRole(id,go){const r=ROLES.find(x=>x.id===id);this.setState(s=>({role:id,layer:r.layer,zone:null,form:s.form.lpr?s.form:{...s.form,lpr:r.label}}));if(go)this.go('map')}
-  setStack(fn,msg){this.setState(s=>{const st=fn(s.stack);try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}return {stack:st}});if(msg)this.showToast(msg)}
+  go(id){setTimeout(()=>{const el=document.getElementById(id);if(el)window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+window.scrollY-(document.querySelector('header')?.getBoundingClientRect().height||64)-16),behavior:'smooth'})},40)}
+  setRole(id,go){const r=ROLES.find(x=>x.id===id);this.setState(s=>({role:id,layer:r.layer,zone:null,q:'',searchAll:false,form:s.form.lpr?s.form:{...s.form,lpr:r.label}}));if(go)this.go('map')}
+  setStack(fn,msg){this.setState(s=>{const st=fn(s.stack);try{localStorage.setItem(LS,JSON.stringify(st))}catch(e){}return {stack:st,undoStack:[...s.stack]}});if(msg)this.showToast(msg)}
   showToast(t){clearTimeout(this.tt);clearTimeout(this.bt);this.setState({toast:t,bump:true});this.bt=setTimeout(()=>this.setState({bump:false}),220);this.tt=setTimeout(()=>this.setState({toast:null}),2400)}
   toggle(id){const inS=this.state.stack.includes(id),c=this.byId[id];this.setStack(st=>inS?st.filter(x=>x!==id):[...st,id],(inS?'Убрано из подборки: ':'Добавлено в подборку: ')+c.name)}
   toggleMany(ids){const s=this.state.stack;if(ids.every(i=>s.includes(i)))this.setStack(st=>st.filter(x=>!ids.includes(x)),'Убрано из подборки: '+plural(ids.length));
     else{const add=ids.filter(i=>!s.includes(i));this.setStack(st=>[...st,...add],'Добавлено в подборку: '+plural(add.length))}}
-  openClass(c){this.setState({layer:c.L.id,zone:c.L.id+'|'+c.code,role:null,q:'',flash:c.id});this.go('map')}
+  openClass(c){this.setState({layer:c.L.id,zone:c.L.id+'|'+c.code,role:null,qSrc:'results',flash:c.id});this.go('map')}
   setF(k,v){this.setState(s=>{const e={...s.errors};delete e[k];return {form:{...s.form,[k]:v},errors:e}})}
-  classV(c,stack,flash){const inS=stack.includes(c.id),exp=!!this.state.expanded[c.id],many=c.items.length>6;
-    return {id:c.id,name:c.name,prio:c.prio,ot:c.ot,hasBadges:c.prio||c.ot,shown:exp||!many?c.items:c.items.slice(0,6),more:many,moreLabel:exp?'Свернуть':'Ещё '+(c.items.length-6),
+  classV(c,stack,flash){const q=this.state.q.trim().toLowerCase(),matches=q.length>=2?c.items.filter(i=>i.toLowerCase().includes(q)):[],items=[...matches,...c.items.filter(i=>!matches.includes(i))];const inS=stack.includes(c.id),exp=!!this.state.expanded[c.id],many=c.items.length>6;
+    return {id:c.id,name:c.name,prio:c.prio,ot:c.ot,hasBadges:c.prio||c.ot,match:matches.join(', '),shown:exp||!many?items:items.slice(0,6),more:many,moreLabel:exp?'Свернуть':'Ещё '+(c.items.length-6),
       toggleMore:()=>this.setState(s=>({expanded:{...s.expanded,[c.id]:!s.expanded[c.id]}})),noItems:!c.items.length,
-      btn:inS?'В подборке ✓':'Добавить в подборку',btnShort:inS?'В подборке':'В подборку',btnAria:(inS?'Убрать из подборки: ':'Добавить в подборку: ')+c.name,open:!!this.state.openCls[c.id]||c.id===flash,ariaOpen:String(!!this.state.openCls[c.id]||c.id===flash),chev:(this.state.openCls[c.id]||c.id===flash)?45:-45,toggleOpen:()=>this.setState(s=>({openCls:{...s.openCls,[c.id]:!(s.openCls[c.id]||c.id===flash)}})),count:c.items.length?c.items.length+' '+(c.items.length%10===1&&c.items.length%100!==11?'позиция':c.items.length%10>=2&&c.items.length%10<=4&&(c.items.length%100<10||c.items.length%100>=20)?'позиции':'позиций'):'Позиции – [требует данных]',variant:inS?'primary':'outline',bg:c.id===flash?'rgba(0,176,189,.14)':'transparent',toggle:()=>this.toggle(c.id)}}
+      btn:inS?'В подборке ✓':'Добавить в подборку',btnShort:inS?'В подборке':'В подборку',btnAria:(inS?'Убрать из подборки: ':'Добавить в подборку: ')+c.name,open:!!this.state.openCls[c.id]||c.id===flash,ariaOpen:String(!!this.state.openCls[c.id]||c.id===flash),chev:(this.state.openCls[c.id]||c.id===flash)?45:-45,toggleOpen:()=>this.setState(s=>({openCls:{...s.openCls,[c.id]:!(s.openCls[c.id]||c.id===flash)}})),count:c.items.length?c.items.length+' '+(c.items.length%10===1&&c.items.length%100!==11?'позиция':c.items.length%10>=2&&c.items.length%10<=4&&(c.items.length%100<10||c.items.length%100>=20)?'позиции':'позиций'):'Позиции каталога пока не указаны',variant:inS?'primary':'outline',bg:c.id===flash?'rgba(0,176,189,.14)':'transparent',toggle:()=>this.toggle(c.id)}}
   renderVals(){
     const s=this.state,w=s.w,mobile=w<900,wide=w>=1100,role=ROLES.find(r=>r.id===s.role),L=LAYERS.find(l=>l.id===s.layer),ready=!!this.Z;
     const zs=ready?this.by[s.layer]:[],lcol=L.id==='prod'?'#1E2849':L.color,lfg=L.id==='prod'?'#fff':L.fg;
     const zoneAll=zs.map((z,i)=>{const hit=this.inRole(z,role),sel=s.zone===z.key;return {n:i+1,name:z.name,
-      sub:z.risks?'Рисков: '+z.risks.length:(z.classes.length?'Классов решений: '+z.classes.length:'Классы – [требует данных]'),cnt:z.risks?z.risks.length:(z.classes.length||'–'),
+      sub:z.risks?'Рисков: '+z.risks.length:(z.classes.length?'Классов решений: '+z.classes.length:'Классы пока не указаны'),cnt:z.risks?z.risks.length:(z.classes.length||'–'),
       onClick:()=>this.setState({zone:z.key,flash:null}),bg:sel?'rgba(0,176,189,.22)':'transparent',bd:sel?'#00B0BD':'transparent',op:role&&!hit?.5:1,cbg:L.id==='prod'?'#4A5C94':lcol,cfg:lfg,ring:role&&hit?'0 0 0 3px #00B27C':'none'}});
     const zoneList=zoneAll;
     const rc={};if(s.data)s.data.forEach(c=>c.roles.forEach(r=>rc[r]=(rc[r]||0)+1));
@@ -863,22 +873,22 @@ class Component extends DCLogic {
     if(role&&s.data){const gm={},ord=[];s.data.filter(c=>c.roles.includes(role.key)).forEach(c=>{const key=c.L.id+'|'+c.code;if(!gm[key]){gm[key]={key,L:c.L,code:c.code,zone:c.zone,cls:[]};ord.push(gm[key])}gm[key].cls.push(c)});
       const li=l=>LAYERS.findIndex(x=>x.id===l.id);ord.sort((a,b)=>li(a.L)-li(b.L));
       roleGroups=ord.map(g=>{const ids=g.cls.map(c=>c.id),allIn=ids.every(i=>s.stack.includes(i));return {name:g.zone,where:SHORT[g.L.id]+' · '+g.code,color:g.L.id==='prod'?'#4A5C94':g.L.color,bd:s.zone===g.key?'#00B0BD':'rgba(255,255,255,.22)',
-        classes:g.cls.map(c=>this.classV(c,s.stack,s.flash)),allLabel:allIn?'Зона в подборке ✓':'Добавить зону ('+ids.length+')',allVariant:allIn?'primary':'outline',toggleAll:()=>this.toggleMany(ids),show:()=>this.setState({layer:g.L.id})}});
+        classes:g.cls.map(c=>this.classV(c,s.stack,s.flash)),allLabel:allIn?'Зона в подборке ✓':'Добавить зону ('+ids.length+')',allVariant:allIn?'primary':'outline',toggleAll:()=>this.toggleMany(ids),show:()=>this.setState({layer:g.L.id,zone:g.key})}});
       const allIds=ord.flatMap(g=>g.cls.map(c=>c.id)),allIn=allIds.length&&allIds.every(i=>s.stack.includes(i));
-      roleSum={label:role.label,text:role.text,trigger:role.trigger,noTrigger:!role.trigger,link:!!role.link,count:plural(allIds.length)+' в '+ord.length+' '+(ord.length%10===1&&ord.length!==11?'зоне':'зонах'),
-        allLabel:allIn?'Подборка добавлена ✓':'Добавить всю подборку ('+allIds.length+')',allVariant:allIn?'primary':'secondary',toggleAll:()=>this.toggleMany(allIds)}}
+      roleSum={selected:allIds.filter(id=>s.stack.includes(id)).length,label:role.label,text:role.text,trigger:role.trigger,noTrigger:false,link:false,count:plural(allIds.length)+' в '+ord.length+' '+(ord.length%10===1&&ord.length!==11?'зоне':'зонах'),
+        allLabel:allIn?'Классы добавлены ✓':'Добавить всю подборку ('+allIds.length+')',allVariant:allIn?'primary':'secondary',toggleAll:()=>this.toggleMany(allIds)}}
     let panel=null;const zone=ready&&s.zone?this.Z[s.zone]:null;
     if(zone){let cls=zone.classes,fb=null;
-      if(role&&cls.length){const f=cls.filter(c=>c.roles.includes(role.key));if(f.length)cls=f;else fb='Классов роли «'+role.label+'» в зоне нет – показаны все классы зоны.'}
+      if(role&&cls.length){const f=cls.filter(c=>c.roles.includes(role.key));if(f.length)cls=f;else fb='Классов роли «'+role.label+'» в зоне нет - показаны все классы зоны.'}
       if(s.flash)cls=[...cls].sort((a,b)=>(b.id===s.flash)-(a.id===s.flash));
       const rl=this.zoneRoles(zone),ids=cls.map(c=>c.id),allIn=ids.length>0&&ids.every(i=>s.stack.includes(i));
       panel={code:zone.risks?'Зона риска ИБ':zone.code+' · '+L.name,name:zone.name,roles:rl,hasRoles:rl.length>0,isRisk:!!zone.risks,risks:zone.risks||[],
         roleFallback:fb,empty:!zone.risks&&!zone.classes.length,hasClasses:ids.length>1,classes:cls.map(c=>this.classV(c,s.stack,s.flash)),isTech:zone.layer==='tech',
-        allLabel:allIn?'Вся зона в подборке ✓':'Добавить всю зону в подборку ('+ids.length+')',allVariant:allIn?'primary':'secondary',toggleAll:()=>this.toggleMany(ids)}}
+        allLabel:allIn?'Классы зоны выбраны ✓':'Добавить всю зону в подборку ('+ids.length+')',allVariant:allIn?'primary':'secondary',toggleAll:()=>this.toggleMany(ids)}}
     const panelStyle=mobile?{position:'fixed',left:0,right:0,bottom:0,zIndex:60,maxHeight:'82vh',overflowY:'auto',background:'#16213F',color:'#fff',borderTop:'1px solid rgba(0,176,189,.55)',borderRadius:'20px 20px 0 0',padding:'12px 20px 28px',boxShadow:'0 -8px 32px rgba(14,20,37,.5)',scrollbarWidth:'thin',scrollbarColor:'rgba(0,176,189,.55) transparent'}:{};
-    const q=s.q.trim().toLowerCase(),all=s.data||[];let results=[],resCount=0;
+    const q=s.q.trim().toLowerCase(),all=s.data||[];let results=[],allResults=[],resCount=0;
     if(q.length>=2){const res=all.filter(c=>(c.name+' '+c.items.join(' ')+' '+c.zone+' '+c.code).toLowerCase().includes(q));resCount=res.length;
-      results=res.slice(0,8).map(c=>{const m=c.items.filter(i=>i.toLowerCase().includes(q)).slice(0,3).join(', ');return {name:c.name,where:c.L.name+' · '+c.code+' · '+c.zone,color:c.L.color,match:m||null,onClick:()=>this.openClass(c)}})}
+      allResults=res.map((c,i)=>{const m=c.items.filter(i=>i.toLowerCase().includes(q)).slice(0,3).join(', ');return {active:i===s.searchIndex?'true':'false',name:c.name,where:c.L.name+' · '+c.code+' · '+c.zone,color:c.L.color,match:m||null,onClick:()=>this.openClass(c)}});results=allResults.slice(0,8)}
     const stackList=s.stack.map(id=>this.byId&&this.byId[id]).filter(Boolean).map(c=>({name:c.name,zone:c.code+' · '+c.zone,remove:()=>this.toggle(c.id)}));
     const prioIds=all.filter(c=>c.code==='П-6'&&PRIO_CLASSES.includes(c.name)).map(c=>c.id),prioAll=prioIds.length&&prioIds.every(id=>s.stack.includes(id));
     const f=s.form,E=s.errors;
@@ -888,29 +898,34 @@ class Component extends DCLogic {
     const act={background:'#00B27C',borderColor:'#00B27C',color:'#1E2849'};
     return {
       loadError:s.loadError,reloadCatalog:()=>window.location.reload(),navOn:w>=1180,mobile,searchOrder:mobile?3:0,searchFlex:mobile?'1 1 100%':'1 1 260px',searchMax:mobile?'none':'440px',
-      q:s.q,onQ:e=>this.setState({q:e.target.value,qSrc:'head'}),onQKey:e=>{if(e.key==='Escape')this.setState({q:''});if(e.key==='Enter'&&results[0])results[0].onClick()},
-      searchOpen:q.length>=2&&s.qSrc!=='hero',closeSearch:()=>this.setState({q:''}),results,noRes:q.length>=2&&!resCount,
-      resLabel:q.length<2?'':resCount?('Найдено классов: '+resCount+(resCount>8?' – показаны первые 8, уточните запрос':'')):'Ничего не найдено – попробуйте другой запрос',
+      q:s.q,onQ:e=>this.setState({q:e.target.value,qSrc:'head',searchIndex:-1,searchAll:false}),onQKey:e=>{
+        const choices=s.searchAll?allResults:results;
+        if(e.key==='Escape')this.setState({qSrc:'results',searchIndex:-1});
+        if(e.key==='ArrowDown'||e.key==='ArrowUp'){e.preventDefault();const d=e.key==='ArrowDown'?1:-1;this.setState({searchIndex:Math.max(0,Math.min(choices.length-1,s.searchIndex+d))})}
+        if(e.key==='Enter'){e.preventDefault();if(s.searchIndex>=0&&choices[s.searchIndex])choices[s.searchIndex].onClick();else{this.setState({searchAll:true,qSrc:'results'});this.go('map')}}
+      },
+      searchOpen:q.length>=2&&s.qSrc==='head',closeSearch:()=>this.setState({qSrc:'results'}),results,noRes:q.length>=2&&!resCount,
+      resLabel:q.length<2?'':resCount?('Найдено классов: '+resCount+(resCount>8?' - показаны первые 8, уточните запрос':'')):'Ничего не найдено - попробуйте другой запрос',
       stackCount:s.stack.length,stackEmpty:!s.stack.length,stackList,stackOpen:s.stackOpen,bumpScale:s.bump?1.12:1,
       stackBg:s.stack.length?'rgba(0,178,124,.22)':'rgba(255,255,255,.08)',stackBd:s.stack.length?'#00B27C':'rgba(255,255,255,.35)',
       openStack:()=>this.setState({stackOpen:true}),closeStack:()=>this.setState({stackOpen:false}),toRequest:()=>{this.setState({stackOpen:false});this.go('request')},
       allActive:!role,allProps:{style:!role?act:{}},resetRole:()=>this.setState({role:null}),
       roleChips:ROLES.map(r=>({label:r.label,active:s.role===r.id,props:{style:s.role===r.id?act:{}},onClick:()=>s.role===r.id?this.setState({role:null}):this.setRole(r.id)})),
-      roleCard:role?{label:role.label,text:role.text,zonesText:role.zonesText,trigger:role.trigger,noTrigger:!role.trigger,link:!!role.link}:null,
-      wsCols:mobile?'minmax(0,1fr)':wide?'minmax(0,1fr) minmax(0,1.15fr)':'minmax(0,1fr) minmax(0,1fr)',mainOrder:mobile?2:1,asideOrder:mobile?1:2,asidePos:mobile?'relative':'sticky',
+      roleCard:role?{label:role.label,text:role.text,zonesText:role.zonesText,trigger:role.trigger,noTrigger:false,link:false}:null,
+      wsCols:s.view==='list'||mobile?'minmax(0,1fr)':wide?'minmax(0,1fr) minmax(0,1.15fr)':'minmax(0,1fr) minmax(0,1fr)',mainOrder:mobile?2:1,asideOrder:mobile?1:2,asidePos:mobile?'relative':'sticky',
       showRoleList:!!roleSum&&(!zone||mobile),showZoneList:!roleSum&&(!zone||mobile),showDetail:!!zone&&!mobile,roleSum,roleGroups,backLabel:role?'К подборке':'Все зоны слоя',
       entryRoles:ROLES.map(r=>({label:r.label,text:r.text,count:rc[r.key]?plural(rc[r.key]):'Открыть подборку',onClick:()=>this.setRole(r.id,true)})),
       entryLayers:LAYERS.map(l=>({short:SHORT[l.id],full:l.name,color:l.id==='prod'?'#4A5C94':l.color,count:l.id==='ib'?'12 рисков · 2 каталога':ready?this.by[l.id].length+' '+(this.by[l.id].length%10===1&&this.by[l.id].length!==11?'зона':'зон'):'',onClick:()=>{this.setState({layer:l.id,role:null,zone:null});this.go('map')}})),
-      onQHero:e=>this.setState({q:e.target.value,qSrc:'hero'}),heroSearchOpen:q.length>=2&&s.qSrc==='hero',showHint:mobile,showStackCol:wide,showTabs:!wide,
+      onQHero:e=>this.setState({q:e.target.value,qSrc:'hero',searchIndex:-1,searchAll:false}),heroSearchOpen:q.length>=2&&s.qSrc==='hero',showHint:mobile,showStackCol:wide,showTabs:!wide,
       stackLayers:LAYERS.map((l,i)=>{const a=l.id===s.layer,c=l.id==='prod'?'#4A5C94':l.color,hex=parseInt(c.slice(1),16),rgba=al=>'rgba('+(hex>>16)+','+(hex>>8&255)+','+(hex&255)+','+al+')';
         return {name:l.name,sel:a?'true':'false',shift:a?14:6,bg:a?'rgba(0,176,189,.18)':'transparent',plate:a?rgba(.95):rgba(.35),edge:a?'#00B0BD':'rgba(255,255,255,.4)',glow:a?'0 0 18px rgba(0,176,189,.6)':'none',fg:a?'#fff':'rgba(255,255,255,.75)',fw:a?700:400,onClick:()=>this.setState({layer:l.id,zone:null,listAll:false})}}),
       layerTabs:LAYERS.map(l=>{const a=l.id===s.layer,rn=role&&ready?this.by[l.id].filter(z=>this.inRole(z,role)).length:0;return {selected:a?'true':'false',short:SHORT[l.id],full:l.name,color:l.id==='prod'?'#4A5C94':l.color,line:a?'#00B0BD':'transparent',fg:a?'#fff':'rgba(255,255,255,.65)',hasRole:rn>0,roleN:rn,onClick:()=>this.setState({layer:l.id,zone:null})}}),
       layer:L,sceneRef:this.sceneRef,
-      sceneHint:role?'Зелёным отмечены зоны роли на выбранном слое. Нажмите на зону, чтобы открыть её классы.':'Наведите на зону – появится описание. Нажмите, чтобы открыть классы решений.',
+      sceneHint:role?'Зелёным отмечены зоны роли на выбранном слое. Нажмите на зону, чтобы открыть её классы.':'Наведите на зону - появится описание. Нажмите, чтобы открыть классы решений.',
       colMax:mobile?'none':wide?'max(320px,calc(100vh - 460px))':'min(720px,calc(100vh - 96px))',colBg:'rgba(255,255,255,.08)',colFg:'#fff',colBd:zone&&!mobile?'rgba(0,176,189,.55)':'rgba(255,255,255,.22)',colScroll:'rgba(0,176,189,.55) transparent',colSh:'none',showList:!panel||mobile,listFade:wide&&zs.length>8,zoneCols:mobile&&w>=560?'repeat(2,minmax(0,1fr))':'minmax(0,1fr)',listMore:!wide&&zs.length>8,listMoreLabel:s.listAll?'Свернуть список':'Показать все '+zs.length+' '+(zs.length%10===1&&zs.length!==11?'зону':'зон'),toggleList:()=>this.setState({listAll:!s.listAll}),zoneList,zoneCount:zs.length+' '+(zs.length%10===1&&zs.length!==11?'зона':'зон'),
       panel,panelStyle,sheetOpen:mobile&&!!zone,closeZone:()=>this.setState({zone:null,flash:null}),
       openIbClasses:()=>this.setState({zone:'ib|ИБ'}),openIbScheme:()=>this.setState({zone:'ib|ИБ-схема'}),
-      addPrio:()=>this.toggleMany(prioIds),prioBtn:prioAll?'Подборка добавлена ✓':'Добавить всю подборку',
+      addPrio:()=>this.toggleMany(prioIds),prioBtn:prioAll?'Классы добавлены ✓':'Добавить всю подборку',
       svcDemo:['Пилот на своём оборудовании до закупки','дистанционные и очные демонстрационные стенды','200+ пилотов в год','40+ инженеров','100+ сертификатов','компетенции по 10 технологическим практикам','техподдержка 1 и 2 линии'],
       svcPak:['Готовые сочетания ПО и оборудования: Kaspersky + Astra Linux + Гравитон.','ПАКи под виртуализацию, резервное копирование, информационную безопасность, высоконагруженные СУБД (Oracle, PostgreSQL / Postgres Pro)'],
       svcFin:['Закупка оборудования без единовременных капитальных затрат','Axoft Finance: отсрочка 30–120 дней, рассрочка 30–365 дней','Axoft Лизинг: лизинг и аренда 12–36 мес.'],
@@ -920,7 +935,14 @@ class Component extends DCLogic {
       editRequest:()=>this.setState({sent:false}),
       ptypeOpts:radio('ptype',['реселлер','системный интегратор']),partnerOpts:radio('isPartner',['да','нет','не знаю']),
       lprOpts:[...ROLES.map(r=>r.label),'другое'],taskOpts:['импортозамещение АСУ ТП','КИИ','мониторинг и управление производством','другое'],termOpts:['до 3 мес.','3–6 мес.','6–12 мес.','не определён'],
-      toastText:s.toast||'',stackBar:s.stack.length>0&&!s.sent,stackBarText:'В подборке '+plural(s.stack.length),toastBottom:s.stack.length?84:24,toastOp:s.toast?1:0,toastY:s.toast?0:16,
+      listSelected:String(s.view==='list'),mapSelected:String(s.view==='map'),sceneDisplay:s.view==='map'?'flex':'none',
+      setListView:()=>this.setState({view:'list'}),setMapView:()=>this.setState({view:'map'}),
+      searchAll:s.searchAll,allResults,searchHeading:'Результаты: '+resCount,hasMoreResults:resCount>8,
+      showAllResults:()=>{this.setState({searchAll:true,qSrc:'results',searchIndex:-1});this.go('map')},
+      closeAllResults:()=>this.setState({searchAll:false}),
+      taskEntries:[['Обновить АСУ ТП','SCADA','Поиск классов с SCADA'],['Контролировать производство','MES','Поиск классов с MES'],['Защитить объекты КИИ','КИИ','Поиск упоминаний КИИ'],['Сохранить данные','резерв','Поиск резервного копирования']].map(([label,query,hint])=>({label,hint,onClick:()=>{this.setState(st=>({q:query,qSrc:'results',searchAll:true,searchIndex:-1,form:{...st.form,task:query==='SCADA'?'импортозамещение АСУ ТП':query==='MES'?'мониторинг и управление производством':query==='КИИ'?'КИИ':'другое',comment:st.form.comment||label}}));this.go('map')}})),
+      canUndo:!!s.undoStack,undoSelection:()=>{const prev=s.undoStack;if(prev)this.setStack(()=>prev,'Предыдущее изменение отменено');this.setState({undoStack:null})},
+      stackReviewLabel:w<600?'Проверить':'Проверить подборку',stackRequestLabel:w<600?'Запрос':'Подготовить запрос',toastText:s.toast||'',stackBar:s.stack.length>0&&!s.sent,stackBarText:'Выбрано: '+plural(s.stack.length),toastBottom:s.stack.length?84:24,toastOp:s.toast?1:0,toastY:s.toast?0:16,
       submit:e=>{e.preventDefault();const err={};REQ.forEach(k=>{if(!f[k]||(typeof f[k]==='string'&&!f[k].trim()))err[k]=k==='consent'?'Подтвердите демонстрационный режим':k==='task'?'Выберите задачу':'Заполните поле'});
         if(f.inn.trim()&&!/^([0-9]{10}|[0-9]{12})$/.test(f.inn.trim()))err.inn='Введите 10 или 12 цифр';
         if(f.contact.trim()&&!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.contact.trim())||/^[+()0-9\s–-]+$/.test(f.contact.trim())&&f.contact.replace(/\D/g,'').length>=10))err.contact='Введите телефон или e-mail';

@@ -7,7 +7,7 @@
       return {schemaVersion:1,mode:'demo',createdAt:new Date().toISOString(),catalogDate:'2026-09-28',form:{...form},classes:classes.map(c=>({id:c.id,name:c.name,layer:c.layer,code:c.code,zone:c.zone,items:[...c.items]}))};
     },
     download(request) {
-      const lines=['Axoft – запрос по промышленному предприятию','ДЕМОВЕРСИЯ. Запрос не отправлен в Axoft.','Дата подготовки: '+new Date(request.createdAt).toLocaleString('ru-RU'),'Каталог по материалам от 28.09.2026',''];
+      const lines=['Axoft - запрос по промышленному предприятию','ДЕМОВЕРСИЯ. Запрос не отправлен в Axoft.','Дата подготовки: '+new Date(request.createdAt).toLocaleString('ru-RU'),'Каталог по материалам от 28.09.2026',''];
       for(const [key,label] of Object.entries(fields)) {
         const value=request.form[key];
         if(typeof value==='boolean')lines.push(label+': '+(value?'да':'нет'));
